@@ -10,14 +10,14 @@ public class ToDo {
     String created_at;
  
     // constructors
-    public void Todo() {
+    public ToDo() {
     }
     
-    public void Todo(String note) {
+    public ToDo(String note) {
         this.note = note;
     }
     
-    public void Todo(String note, int status) {
+    public ToDo(String note, int status) {
         this.note = note;
         this.status = status;
     }

@@ -88,7 +88,27 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     
     /*******************************methods***************************************/
     // Creating a todo
-    public long createToDo(ToDo todo, long[] tag_ids) {
+    public long createToDo(ToDo todo, int tag_ids) {
+        SQLiteDatabase db = this.getWritableDatabase();
+     
+        ContentValues values = new ContentValues();
+        values.put(KEY_TODO, todo.getNote());
+        values.put(KEY_STATUS, todo.getStatus());
+        values.put(KEY_CREATED_AT, todo.getDateTime());
+     
+        // insert row
+        long todo_id = db.insert(TABLE_TODO, null, values);
+     
+        // assigning tags to todo
+      //  for (long tag_id : tag_ids) {
+        //    createTodoTag(todo_id, tag_id);
+        //}
+     
+        return todo_id;
+    }
+
+/*    public long createToDo(ToDo todo) {
+
         SQLiteDatabase db = this.getWritableDatabase();
      
         ContentValues values = new ContentValues();
@@ -105,8 +125,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         }
      
         return todo_id;
-    }
-
+    }*/
+    
     //get single todo SELECT * FROM todos WHERE id = 1;
     public ToDo getTodo(long todo_id) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -290,7 +310,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 
  // Assigning a Tag to Todo
-           public long createTodoTag(long todo_id, long tag_id) {
+           public long createTodoTag(long todo_id,int tag_id) {
             SQLiteDatabase db = this.getWritableDatabase();
      
             ContentValues values = new ContentValues();
