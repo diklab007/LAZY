@@ -1,58 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="fill_parent" android:id = "@+id/container"
-    android:layout_height="wrap_content">
+    android:id="@+id/container"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
-    <EditText android:layout_width="250dp" android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true" android:id="@+id/editText"
-        android:text="" android:inputType="text">
-    </EditText> 
+<fragment
+   android:name="com.example.lazyn.tamaguchiFragment"
+   android:id="@+id/tamaguchi_fragment"
+   android:layout_width="fill_parent"
+   android:layout_height="175dp"
+   />
+ 
+<RelativeLayout
+    android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:layout_below="@id/tamaguchi_fragment"
+           android:focusable="true" android:focusableInTouchMode="true">
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:inputType="text"
+        android:text="" >
+    </EditText>
 
-    <Button 
-     android:layout_height="50dip" 
-     android:id="@+id/help" 
-     android:background="#ffffff"
-     android:layout_width="50dip" 
-     android:layout_alignParentRight="true">
-     
-     </Button>
-     
-    <Button android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:text="@+string/ADD" android:id="@+id/Add"  android:onClick="addToDo"
-    android:layout_toLeftOf="@id/help"/>
+    <Button
+        android:id="@+id/Add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@color/lightBlue"
+        android:onClick="addToDo"
+        android:text="@+string/ADD"
+        android:textColor="@android:color/white" />
 
-    <TableLayout android:id="@+id/data_table"
-     
-        android:layout_width="fill_parent" android:layout_height="wrap_content"
-        android:background="#cdc9c9" android:layout_below="@id/Add">
+    <TableLayout
+        android:id="@+id/data_table"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Add"
+        android:background="#cdc9c9" >
 
-        <TableRow android:background="#cdc9c9">
+        <TableRow android:background="#cdc9c9" >
 
-            <TextView android:layout_marginLeft="35dip" android:text="@+string/todo"
-                android:background="#cdc9c9" android:textColor="#000000"
-                android:textSize="15sp"
-                    android:minWidth="150dip" />
-            <TextView android:text="" android:layout_width="2dip" />
+            <TextView
+                android:layout_marginLeft="35dip"
+                android:background="#cdc9c9"
+                android:minWidth="150dip"
+                android:text="@+string/todo"
+                android:textColor="#000000"
+                android:textSize="15sp" />
 
-            <TextView android:text="@+string/textview_Added" android:background="#cdc9c9"
-                       android:textSize="15sp"
-                           android:gravity="left"
-                     android:textColor="#000000" android:minWidth="50dip" />
-                     
-             <TextView android:text="@+string/Done" android:background="#cdc9c9"
-                       android:textSize="15sp"
-                     android:gravity="right"
-                     android:textColor="#000000" android:minWidth="50dip" />
+            <TextView
+                android:layout_width="2dip"
+                android:text="" />
+
+            <TextView
+                android:background="#cdc9c9"
+                android:gravity="left"
+                android:minWidth="50dip"
+                android:text="@+string/textview_Added"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+
+            <TextView
+                android:background="#cdc9c9"
+                android:gravity="right"
+                android:minWidth="50dip"
+                android:text="@+string/Done"
+                android:textColor="#000000"
+                android:textSize="15sp" />
         </TableRow>
-        
     </TableLayout>
-    
-    <ListView android:id="@+id/toDoList"
-                android:layout_below="@id/data_table" android:layout_width="fill_parent"
-                android:layout_height="wrap_content" android:background="#eeeee0"
-                android:drawSelectorOnTop="false">
-                 
-            </ListView>
-                     
+
+    <ListView
+        android:id="@+id/toDoList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/data_table"
+        android:background="#eeeee0"
+        android:drawSelectorOnTop="false" >
+    </ListView>
+ </RelativeLayout>
 </RelativeLayout>

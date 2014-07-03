@@ -5,6 +5,7 @@ package com.sqlite.helper;
 public class ToDo {
 	
 	int id;
+	int arrayId;
     String note;
     int status;
     String created_at;
@@ -17,9 +18,10 @@ public class ToDo {
         this.note = note;
     }
     
-    public ToDo(String note, int status) {
+
+    public ToDo(String note, int position) {
         this.note = note;
-        this.status = status;
+        this.arrayId = position;
     }
  
     public void Todo(int id, String note, int status) {
@@ -31,6 +33,10 @@ public class ToDo {
     // setters
     public void setId(int id) {
         this.id = id;
+    }
+    
+    public void setArrayId(int id) {
+        this.arrayId = id;
     }
  
     public void setNote(String note) {
@@ -48,6 +54,9 @@ public class ToDo {
     // getters
     public long getId() {
         return this.id;
+    }
+    public int getArrayId() {
+        return this.arrayId;
     }
  
     public String getNote() {

@@ -6,8 +6,9 @@
     <string name="action_settings">Settings</string>
     <string name="new_todo_name">add a new to do</string>
     <string name="ADD">Add</string>
-	<string name="todo">todo</string>
-	<string name="textview_Added">textview new todo</string>
-	<string name="Done">done</string>
-	
+    <string name="todo">todo</string>
+    <string name="textview_Added">textview new todo</string>
+    <string name="Done">done</string>
+    <string name="title_activity_to_do_details">ToDo Details</string>
+
 </resources>

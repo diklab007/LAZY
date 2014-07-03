@@ -5,13 +5,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.Inflater;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+ 
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +29,8 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,60 +40,24 @@ import android.os.Build;
 import com.sqlite.helper.*;
 import com.example.lazyn.R;
 
+
 public class MainActivity extends ActionBarActivity {
 	StableArrayAdapter adapter;
-	//List<String> list = new LinkedList<String>();
-	//database connection
 	DatabaseHelper db= new DatabaseHelper(this);
 	/******************************stableArrayAdapterclass*****************///
-/*	 private class StableArrayAdapter extends ArrayAdapter<String> {
-
-		    HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-		    public StableArrayAdapter(Context context, int textViewResourceId,
-		        List<String> objects) {
-		      super(context, textViewResourceId, objects);
-		      for (int i = 0; i < objects.size(); ++i) {
-		        mIdMap.put(objects.get(i), i);
-		      }
-		    }
-		    
-		    public StableArrayAdapter( int textViewResourceId,Context context,
-			        List<ToDo> objects) {
-			      super(context, textViewResourceId, objects);
-			      for (int i = 0; i < objects.size(); ++i) {
-			        mIdMap.put(objects.get(i), i);
-			      }
-			    }		    
-		    @Override
-		    public long getItemId(int position) {
-		      String item = getItem(position);
-		      return mIdMap.get(item);
-		    }
-
-		    @Override
-		    public boolean hasStableIds() {
-		      return true;
-		    }
-
-		  }*/
 	 private class StableArrayAdapter extends BaseAdapter {
 
 		 ArrayList<ToDo> toDoArray = new ArrayList<ToDo>();
 
-		 /*   public StableArrayAdapter(Context context, int textViewResourceId,
-		        List<String> objects) {
-		      super(context, textViewResourceId, objects);
-		      for (int i = 0; i < objects.size(); ++i) {
-		        mIdMap.put(objects.get(i), i);
-		      }
-		    }*/
-		    
 		 public void addItem(ToDo item){
 		    	 toDoArray.add(item);
 		    }
 		    @Override
 		    public int getCount(){
+		    	if(toDoArray.isEmpty()){
+		    		return 0;
+		    	}
+
 		    	return toDoArray.size();
 		    }
 		    @Override
@@ -99,15 +73,47 @@ public class MainActivity extends ActionBarActivity {
 
 		    @Override
 		    public View getView(int position, View convertView, ViewGroup parent) {
+		    	MyTag tag;
+		    	ToDo td;
 		    	View row;
 		    	String title;
 		    	LayoutInflater inflater=getLayoutInflater();
 		    	TextView titleView;
+		    	ImageView deleteButton;
 		    	ToDo item=getItem(position);
+		    	item.setArrayId(position);
 	            row = inflater.inflate(R.layout.todorow, parent, false);
 	            title=item.getNote();
 	            titleView = (TextView) row.findViewById(R.id.title_row);
 	            titleView.setText(title);
+	            td=getItem(position);
+	            tag= new MyTag(position, (td.getId())); 
+	            row.setTag(tag);
+	        
+	            deleteButton= (ImageView) row.findViewById(R.id.remove);
+	            deleteButton.setOnClickListener(
+	                    new Button.OnClickListener() {
+	                        @Override
+	                        public void onClick(View v) {
+	                        	View parent;
+	                        	parent=(View) v.getParent();
+	                            MyTag mTag =  (MyTag) parent.getTag();
+	                            toDoArray.remove(mTag.getPosition());
+	                            db.deleteToDo(mTag.getId());
+	                            notifyDataSetChanged();	                            
+	                        }
+	                    }
+	                );
+	            
+	            titleView.setOnClickListener(
+	            		new Button.OnClickListener() {
+	            			@Override
+	            			public void onClick(View v){
+	            				
+	            		        startActivity(new Intent(getApplicationContext(), ToDoDetails.class));
+
+	            			}
+	            });
 	            return row;
 
 		    }
@@ -118,58 +124,83 @@ public class MainActivity extends ActionBarActivity {
 	
 	 @Override
 	protected void onCreate(Bundle savedInstanceState) {
+
         List<ToDo> todoList = new ArrayList<ToDo>();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+		adapter = new StableArrayAdapter();
+		//adding fragment
+		addTmFrag();
 		//get all to do
 		todoList=db.getAllToDos();
 		if (!todoList.isEmpty()){
 			showToDos(todoList);
 		}
-	   	 /** Reference to the button of the layout main.xml */
-       //Button btn = (Button) findViewById(R.id.Add);
-       /** Defining a click event listener for the button "Add" */
-       /*btn.setOnClickListener(new View.OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-							}
-			
-       });*/
 		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
+	        Log.v("bundle", "null");
 		}
-	}
+		
+	 }
+
+	//adding tamaguchi fragment
+ public void addTmFrag(){
+				          Fragment fr;
+				           fr = new tamaguchiFragment();
+				          FragmentManager fm = getFragmentManager();
+				          android.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+				          fragmentTransaction.replace(R.id.tamaguchi_fragment, fr);
+				          happyTurtule();
+				          fragmentTransaction.commit();
+}
+ 
+ //play happy turtule animation
+public void happyTurtule(){
+	 // Load the ImageView that will host the animation and
+	 // set its background to our AnimationDrawable XML resource.
+	 ImageView img = (ImageView)findViewById(R.id.tmImage);
+	 img.setAdjustViewBounds(true);
+	 img.setScaleType(ScaleType.FIT_CENTER);
+
+	// img.setBackgroundResource(R.drawable.happy);
+	 img.setImageDrawable(getResources().getDrawable(R.drawable.happy)); 
+
+	 // Get the background, which has been compiled to an AnimationDrawable object.
+	 AnimationDrawable frameAnimation = (AnimationDrawable) img.getDrawable();
+
+	 // Start the animation (looped playback by default).
+	 frameAnimation.start();
+}
 	/*********on click btn*************/
 	public void addToDo(View v) 
 	{
+		int toDoId;
 		ToDo newToDO;
     	EditText edit = (EditText) findViewById(R.id.editText);
-		String itemString=edit.getText().toString();
-
-    	newToDO=new ToDo(itemString);
-       ListView listOfItems = (ListView)findViewById(R.id.toDoList); 
-	
-	//	list.add(itemString);
-		//adapter = new StableArrayAdapter(this, R.layout.todorow,list);
-	//	adapter= new StableArrayAdapter();
+    	String itemString=edit.getText().toString();
+		int positionInArray=adapter.getCount();
+    	newToDO=new ToDo(itemString, positionInArray);
+    	ListView listOfItems = (ListView)findViewById(R.id.toDoList); 
 		adapter.addItem(newToDO);
 		//adapter.getView(position, convertView, parent)
 		listOfItems.setAdapter(adapter);
-		
 		//add to database
-		newToDO= new ToDo(itemString);
-		db.createToDo(newToDO, 1);
-		edit.setText("");				
-
+		toDoId=(int) db.createToDo(newToDO, 1);
+		newToDO.setId(toDoId);
+		edit.setText("");			
+		
+		//moveToAnotherActivity();
 	}	
+
+//	private void moveToAnotherActivity() {
+	//	Intent goToNextActivity = new Intent(getApplicationContext(), FragmentActivity.class);
+		//startActivity(goToNextActivity);		
+	//}
 	/***********************************/
 	
 	/***********help functions*************/
 	
 	public void showToDos(List<ToDo> todoList){
 	    
-		adapter = new StableArrayAdapter();
 		ListView listOfItems = (ListView)findViewById(R.id.toDoList); 
 		String title;
 		for (ToDo td : todoList){
